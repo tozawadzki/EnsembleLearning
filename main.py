@@ -18,6 +18,8 @@ from sklearn.ensemble import RandomForestClassifier
 #Bayes
 from sklearn.naive_bayes import GaussianNB
 #Bagging, boosting?
+from sklearn.ensemble import BaggingClassifier
+from sklearn.ensemble import GradientBoostingClassifier
 
 #Dane
 from sklearn import datasets
@@ -37,10 +39,9 @@ X_train, X_test, y_train, y_test = train_test_split(X,
 #sample voting from geeksforgeeks
 def voting_sample():
     estimator = []
-    #estimator.append(('MLP', MLPClassifier()))
-    #estimator.append(('KNN', KNeighborsClassifier()))
-    estimator.append(('DTC', DecisionTreeClassifier()))
+    estimator.append(('LR', LogisticRegression(solver ='lbfgs', multi_class ='multinomial', max_iter = 200)))
     estimator.append(('SVC', SVC(gamma ='auto', probability = True)))
+    estimator.append(('DTC', DecisionTreeClassifier()))
 
     vot_hard = VotingClassifier(estimators = estimator, voting ='hard')
     vot_hard.fit(X_train, y_train)
@@ -89,9 +90,15 @@ def knn_voting():
 
 def ensemble_voting():
     estimator = []
-    estimator.append(('DTC', DecisionTreeClassifier().fit(X_train, y_train)))
-    estimator.append(('KNN', KNeighborsClassifier(n_neighbors=7).fit(X_train, y_train)))
-    estimator.append(('SVC', SVC(kernel='rbf', probability=True).fit(X_train, y_train)))
+
+    #five classifiers
+    #parameters to change in sklearn documentation - depths, levels, probabilities etc.
+    estimator.append(('DTC', DecisionTreeClassifier()))
+    estimator.append(('KNN', KNeighborsClassifier(n_neighbors=7)))
+    estimator.append(('SVC', SVC(kernel='rbf', probability=True)))
+    estimator.append(('LR', LogisticRegression()))
+    estimator.append(('RF', RandomForestClassifier()))
+
     #What about these weights? VotingClassifier(estimators, voting='soft', weights=[2, 1, 2])
 
     ensemble_voting_soft = VotingClassifier(estimators = estimator, voting='soft')
@@ -103,7 +110,13 @@ def ensemble_voting():
     soft_predict = ensemble_voting_soft.predict(X_test)
     hard_predict = ensemble_voting_hard.predict(X_test)
 
-    print("Soft voting prediction: ", soft_predict, "\nHard voting prediction:", hard_predict)
+    soft_accuracy = accuracy_score(y_test, soft_predict)
+    hard_accuracy = accuracy_score(y_test, hard_predict)
+
+    print("Prediction")
+    print("Soft voting: ", soft_predict, "\nHard voting:", hard_predict)
+    print("Accuracy")
+    print("Soft voting: ", soft_accuracy, "\nHard voting:", hard_accuracy)
 
 #voting_sample()
 #knn_voting()
