@@ -21,15 +21,25 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import BaggingClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 
+#Do wczytywania danych z excela
+import pandas as pd
+import numpy as np
+
 #Dane
 from sklearn import datasets
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
 #loading data
-iris = datasets.load_iris()
-X = iris.data[:, [0, 2]]
-Y = iris.target
+#iris = datasets.load_iris()
+#X = iris.data[:, [0, 2]]
+#Y = iris.target
+
+# Wczytywanie danych z Excela test 
+df = pd.read_excel("data\data1.xls", sheet_name="Sheet1")
+X = np.array(df, dtype='float32')
+Y = np.array(pd.read_excel("data\data1.xls", sheet_name="Sheet2"))
+Y = Y.ravel()
 
 X_train, X_test, y_train, y_test = train_test_split(X, 
                                                     Y, 
