@@ -11,123 +11,54 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 #Regresja 
 from sklearn.linear_model import LogisticRegression
-#Sztuczna sieć neuronowa
-from sklearn.neural_network import MLPClassifier
-#Las losowy
-from sklearn.ensemble import RandomForestClassifier
 #Bayes
 from sklearn.naive_bayes import GaussianNB
-#Bagging, boosting?
-from sklearn.ensemble import BaggingClassifier
-from sklearn.ensemble import GradientBoostingClassifier
+#Sztuczna sieć neuronowa
+from sklearn.neural_network import MLPClassifier
 
 #Do wczytywania danych z excela
 import pandas as pd
 import numpy as np
 
 #Dane
-from sklearn import datasets
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
-#loading data
-#iris = datasets.load_iris()
-#X = iris.data[:, [0, 2]]
-#Y = iris.target
-
-# Wczytywanie danych z Excela test 
+# Wczytywanie danych z Excela test
 df = pd.read_excel("data\data1.xls", sheet_name="Sheet1")
 X = np.array(df, dtype='float32')
 Y = np.array(pd.read_excel("data\data1.xls", sheet_name="Sheet2"))
 Y = Y.ravel()
 
-X_train, X_test, y_train, y_test = train_test_split(X, 
+X_train, X_test, Y_train, Y_test = train_test_split(X, 
                                                     Y, 
                                                     test_size = 0.20, 
                                                     random_state = 42)
-
-#sample voting from geeksforgeeks
-def voting_sample():
-    estimator = []
-    estimator.append(('LR', LogisticRegression(solver ='lbfgs', multi_class ='multinomial', max_iter = 200)))
-    estimator.append(('SVC', SVC(gamma ='auto', probability = True)))
-    estimator.append(('DTC', DecisionTreeClassifier()))
-
-    vot_hard = VotingClassifier(estimators = estimator, voting ='hard')
-    vot_hard.fit(X_train, y_train)
-    y_pred = vot_hard.predict(X_test)
-
-    score = accuracy_score(y_test, y_pred)
-    print("Hard Voting Score % d" % score)
-
-    vot_soft = VotingClassifier(estimators = estimator, voting ='soft')
-    vot_soft.fit(X_train, y_train)
-    y_pred = vot_soft.predict(X_test)
-
-    score = accuracy_score(y_test, y_pred)
-    print("Soft Voting Score % d" % score)
-
-#knn voting for 1, 3, 5, 7, 9
-#returns hard_knn, soft_nn
-def knn_voting():
-
-    def append_knn():
-        models = list()
-        models.append(('knn1', KNeighborsClassifier(n_neighbors=1)))
-        models.append(('knn3', KNeighborsClassifier(n_neighbors=3)))
-        models.append(('knn5', KNeighborsClassifier(n_neighbors=5)))
-        models.append(('knn7', KNeighborsClassifier(n_neighbors=7)))
-        models.append(('knn9', KNeighborsClassifier(n_neighbors=9)))
-        return models
-
-    def get_hard_knn():
-        models = append_knn()
-        return VotingClassifier(estimators=models, voting='hard')
-
-    def get_soft_knn():
-        models = append_knn()
-        return VotingClassifier(estimators=models, voting='soft')
-
-    knn_hard = get_hard_knn()
-    knn_soft = get_soft_knn()
-
-    knn_hard.fit(X_train, y_train)
-    knn_soft.fit(X_train, y_train)
-
-    knn_hard_pred = knn_hard.predict(X_test)
-    knn_soft_pred = knn_soft.predict(X_test)
-    print("Hard voting prediction: ", knn_hard_pred, "\nSoft voting prediction:", knn_soft_pred)
-
 def ensemble_voting():
     estimator = []
 
-    #five classifiers
-    #parameters to change in sklearn documentation - depths, levels, probabilities etc.
-    estimator.append(('DTC', DecisionTreeClassifier()))
-    estimator.append(('KNN', KNeighborsClassifier(n_neighbors=7)))
-    estimator.append(('SVC', SVC(kernel='rbf', probability=True)))
-    estimator.append(('LR', LogisticRegression()))
-    estimator.append(('RF', RandomForestClassifier()))
-
-    #What about these weights? VotingClassifier(estimators, voting='soft', weights=[2, 1, 2])
+    estimator.append(('DTC', DecisionTreeClassifier(random_state=0)))
+    estimator.append(('KNN', KNeighborsClassifier(n_neighbors=3)))
+    estimator.append(('SVC', SVC(gamma='auto', probability=True)))
+    estimator.append(('LR', LogisticRegression(random_state=10, max_iter=1000)))
+    estimator.append(('RF', MLPClassifier(hidden_layer_sizes=(10), max_iter=10000, random_state=0)))
 
     ensemble_voting_soft = VotingClassifier(estimators = estimator, voting='soft')
-    ensemble_voting_soft.fit(X_train, y_train)
+    ensemble_voting_soft.fit(X_train, Y_train)
 
     ensemble_voting_hard = VotingClassifier(estimators = estimator, voting='hard')
-    ensemble_voting_hard.fit(X_train, y_train)
+    ensemble_voting_hard.fit(X_train, Y_train)
 
     soft_predict = ensemble_voting_soft.predict(X_test)
     hard_predict = ensemble_voting_hard.predict(X_test)
 
-    soft_accuracy = accuracy_score(y_test, soft_predict)
-    hard_accuracy = accuracy_score(y_test, hard_predict)
+    soft_accuracy = accuracy_score(Y_test, soft_predict)
+    hard_accuracy = accuracy_score(Y_test, hard_predict)
 
     print("Prediction")
-    print("Soft voting: ", soft_predict, "\nHard voting:", hard_predict)
+    print("Soft voting: ", soft_predict, "\nHard voting: ", hard_predict)
+    print("Data set:    ", Y_test)
     print("Accuracy")
-    print("Soft voting: ", soft_accuracy, "\nHard voting:", hard_accuracy)
+    print("Soft voting: ", soft_accuracy, "\nHard voting: ", hard_accuracy)
 
-#voting_sample()
-#knn_voting()
 ensemble_voting()
