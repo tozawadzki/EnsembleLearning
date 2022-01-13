@@ -1,0 +1,21 @@
+data1
+Soft voting: 0.8387096774193549
+Hard voting: 0.8064516129032258
+data2
+Soft voting: 0.6375
+Hard voting: 0.58125
+data3
+Soft voting: 0.9545454545454546
+Hard voting: 0.8939393939393939
+data4
+Soft voting: 0.7681818181818182
+Hard voting: 0.7681818181818182
+data5
+Soft voting: 0.8518518518518519
+Hard voting: 0.8333333333333334
+data6
+Soft voting: 0.875
+Hard voting: 0.7777777777777778
+data7
+Soft voting: 0.9783549783549783
+Hard voting: 0.9632034632034632

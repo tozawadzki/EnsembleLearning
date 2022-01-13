@@ -28,20 +28,7 @@ from sklearn.model_selection import train_test_split
 #Nazwy zestawow danych 
 dataSetsNames= ["data1","data2", "data3", "data4", "data5", "data6", "data7"]
 
-# Wczytywanie danych z Excela test
-df = pd.read_excel("data\{}.xls".format(dataSetsNames[6]), sheet_name="Sheet1")
-X = np.array(df, dtype='float32')
-Y = np.array(pd.read_excel("data\{}.xls".format(dataSetsNames[6]), sheet_name="Sheet2"))
-Y = Y.ravel()
-
-# Werydikuje sb  dlugosc Y
-print(Y.size)
-
-X_train, X_test, Y_train, Y_test = train_test_split(X, 
-                                                    Y, 
-                                                    test_size = 0.20, 
-                                                    random_state = 42)
-def ensemble_voting():
+def ensemble_voting(x):
     estimator = []
 
     estimator.append(('DTC', DecisionTreeClassifier(min_samples_split=5, min_samples_leaf=3, random_state=0)))
@@ -79,4 +66,33 @@ def ensemble_voting():
     plt.axis('equal')
     plt.show()
 
-ensemble_voting()
+    #Zapisanie wynikow do pliku tekstowego
+    f = open("results.txt", "a")
+    f.write(x)
+    f.write("\n")
+    f.write("Soft voting: ")
+    f.write(str(soft_accuracy))
+    f.write("\n")
+    f.write("Hard voting: ")
+    f.write(str(hard_accuracy))
+    f.write("\n")
+    f.close()
+
+#Petla co by sie wszystko z automata robilo 
+for x in dataSetsNames:
+
+    # Wczytywanie danych z Excela test
+    df = pd.read_excel("data\{}.xls".format(x), sheet_name="Sheet1")
+    X = np.array(df, dtype='float32')
+    Y = np.array(pd.read_excel("data\{}.xls".format(x), sheet_name="Sheet2"))
+    Y = Y.ravel()
+
+    # Werydikuje sb  dlugosc Y
+    print(Y.size)
+
+    X_train, X_test, Y_train, Y_test = train_test_split(X, 
+                                                        Y, 
+                                                        test_size = 0.20, 
+                                                        random_state = 42)
+
+    ensemble_voting(x)
