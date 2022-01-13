@@ -25,11 +25,17 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
+#Nazwy zestawow danych 
+dataSetsNames= ["data1","data2", "data3", "data4", "data5", "data6", "data7"]
+
 # Wczytywanie danych z Excela test
-df = pd.read_excel("data\data1.xls", sheet_name="Sheet1")
+df = pd.read_excel("data\{}.xls".format(dataSetsNames[6]), sheet_name="Sheet1")
 X = np.array(df, dtype='float32')
-Y = np.array(pd.read_excel("data\data1.xls", sheet_name="Sheet2"))
+Y = np.array(pd.read_excel("data\{}.xls".format(dataSetsNames[6]), sheet_name="Sheet2"))
 Y = Y.ravel()
+
+# Werydikuje sb  dlugosc Y
+print(Y.size)
 
 X_train, X_test, Y_train, Y_test = train_test_split(X, 
                                                     Y, 

@@ -1,0 +1,7 @@
+data1 -> dane z zeszlego semestru (ZIWM)
+data2 -> winequality-red (KEEL)
+data3 -> vowel (KEEL)
+data4 -> titanic (KEEL)
+data5 -> spectfheart (KEEL)
+data6 -> movement_libras (KEEL) 
+data7 -> segment (KEEL)
