@@ -1,7 +1,20 @@
-data1 -> dane z zeszlego semestru (ZIWM)
+data1 -> hepatitis (UCI)
 data2 -> winequality-red (KEEL)
 data3 -> vowel (KEEL)
 data4 -> titanic (KEEL)
 data5 -> spectfheart (KEEL)
 data6 -> movement_libras (KEEL) 
 data7 -> segment (KEEL)
+data8 -> led7digit (KEEL)
+data9 -> zoo (KEEL)
+data10 -> phoneme (KEEL)
+data11 -> wdbc (KEEL) M=1 , B=2 
+data12 -> yeast (KEEL) MIT=1, NUC=2, CYT=3, ME1=4, ME2=5, ME3=6, EXC=7, VAC=8, POX=9, ERL=10
+data13 ->  winequality-white (KEEL)
+data14 -> twonorm (KEEL)
+data15 -> ring (KEEL)
+data16 -> texture (KEEL)
+data17 -> vehicle (KELL) van=1, saab=2, bus=3, opel=4
+data18  -> haberman (KEEL) positive=1, negative=2
+data19 -> monk-2 (KEEL) 
+data20 -> balance (KEEL) L=1, B=2, R=3

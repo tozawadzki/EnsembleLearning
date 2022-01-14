@@ -26,7 +26,8 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
 #Nazwy zestawow danych 
-dataSetsNames= ["data1","data2", "data3", "data4", "data5", "data6", "data7"]
+#dataSetsNames= ["data1","data2", "data3", "data4", "data5", "data6", "data7"]
+dataSetsNames= ["data20"]
 
 def ensemble_voting(x):
     estimator = []
