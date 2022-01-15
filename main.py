@@ -1,32 +1,18 @@
-#Głosowanie
 from sklearn.ensemble import VotingClassifier
-
-#Klasyfikatory - różne rodzaje klasyfikatorów bazowych
-
-#Drzewa
 from sklearn.tree import DecisionTreeClassifier
-#KNN
 from sklearn.neighbors import KNeighborsClassifier
-#Wektor wsparcia
 from sklearn.svm import SVC
-#Regresja 
 from sklearn.linear_model import LogisticRegression
-#Bayes
 from sklearn.naive_bayes import GaussianNB
-#Sztuczna sieć neuronowa
 from sklearn.neural_network import MLPClassifier
 
-#Do wczytywania danych z excela
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-#Dane
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
-#Nazwy zestawow danych 
-#dataSetsNames= ["data1","data2", "data3", "data4", "data5", "data6", "data7"]
 dataSetsNames= ["data20"]
 
 def ensemble_voting(x):
@@ -56,18 +42,28 @@ def ensemble_voting(x):
     print("Accuracy")
     print("Soft voting:", soft_accuracy, "\nHard voting:", hard_accuracy)
 
-    plt.figure(figsize=(5,5))
-    plt.scatter(Y_test, soft_predict, c='crimson')
 
-    p1 = max(max(soft_predict), max(Y_test))
-    p2 = min(min(soft_predict), min(Y_test))
-    plt.plot([p1, p2], [p1, p2], 'b-')
-    plt.xlabel('True Values', fontsize=10)
-    plt.ylabel('Predictions', fontsize=10)
-    plt.axis('equal')
-    plt.show()
+    writeToFile(soft_accuracy, hard_accuracy)
+    createPlot(soft_predict, Y_test)
 
-    #Zapisanie wynikow do pliku tekstowego
+for x in dataSetsNames:
+
+    df = pd.read_excel("data\{}.xls".format(x), sheet_name="Sheet1")
+    X = np.array(df, dtype='float32')
+    Y = np.array(pd.read_excel("data\{}.xls".format(x), sheet_name="Sheet2"))
+    Y = Y.ravel()
+
+    print(Y.size)
+
+    X_train, X_test, Y_train, Y_test = train_test_split(X, 
+                                                        Y, 
+                                                        test_size = 0.20, 
+                                                        random_state = 42)
+
+    ensemble_voting(x)
+
+
+def writeToFile(soft_accuracy, hard_accuracy):
     f = open("results.txt", "a")
     f.write(x)
     f.write("\n")
@@ -79,21 +75,14 @@ def ensemble_voting(x):
     f.write("\n")
     f.close()
 
-#Petla co by sie wszystko z automata robilo 
-for x in dataSetsNames:
+def createPlot(soft_predict, Y_test):
+    plt.figure(figsize=(5,5))
+    plt.scatter(Y_test, soft_predict, c='crimson')
 
-    # Wczytywanie danych z Excela test
-    df = pd.read_excel("data\{}.xls".format(x), sheet_name="Sheet1")
-    X = np.array(df, dtype='float32')
-    Y = np.array(pd.read_excel("data\{}.xls".format(x), sheet_name="Sheet2"))
-    Y = Y.ravel()
-
-    # Werydikuje sb  dlugosc Y
-    print(Y.size)
-
-    X_train, X_test, Y_train, Y_test = train_test_split(X, 
-                                                        Y, 
-                                                        test_size = 0.20, 
-                                                        random_state = 42)
-
-    ensemble_voting(x)
+    p1 = max(max(soft_predict), max(Y_test))
+    p2 = min(min(soft_predict), min(Y_test))
+    plt.plot([p1, p2], [p1, p2], 'b-')
+    plt.xlabel('True Values', fontsize=10)
+    plt.ylabel('Predictions', fontsize=10)
+    plt.axis('equal')
+    plt.show()
