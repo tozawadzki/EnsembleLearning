@@ -69,7 +69,7 @@ def ensemble_voting(x):
     base_classifiers.append(('KNN', KNeighborsClassifier()))
     base_classifiers.append(('DTC', DecisionTreeClassifier()))
     base_classifiers.append(('LR', LogisticRegression(max_iter=1000000)))
-    base_classifiers.append(('RF', GaussianNB()))
+    base_classifiers.append(('GNB', GaussianNB()))
     base_classifiers.append(('SVC', SVC(gamma="auto", probability=True)))
 
     ensemble_voting_soft = VotingClassifier(
