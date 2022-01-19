@@ -14,26 +14,30 @@ from sklearn.model_selection import train_test_split
 # Nazwy zbiorow danych
 dataSetsNames = [
     'data1',
-    'data2',
-    'data3',
-    'data4',
-    'data5',
-    'data6',
-    'data7',
-    'data8',
-    'data9',
-    'data10',
-    'data11',
-    'data12',
-    'data13',
-    'data14',
-    'data15',
-    'data16',
-    'data17',
-    'data18',
-    'data19',
-    'data20',
+    #'data2',
+    'data3'#,
+    #'data4',
+    #'data5',
+    #'data6',
+    #'data7',
+    #'data8',
+    #'data9',
+    #'data10',
+    #'data11',
+    #'data12',
+    #'data13',
+    #'data14',
+    #'data15',
+    #'data16',
+    #'data17',
+    #'data18',
+    #'data19',
+    #'data20',
 ]
+
+# Average results
+averageResultsSoft = [ [] , [] , [] ]
+averageResultsHard = [ [] , [] , [] ]
 
 # Zapis wynikow do pliku
 def writeToFile(soft_accuracy, hard_accuracy, y):
@@ -113,6 +117,9 @@ def ensemble_voting(x):
         soft_accuracy = accuracy_score(Y_test, soft_predict)
         hard_accuracy = accuracy_score(Y_test, hard_predict)
 
+        averageResultsSoft[y].append(soft_accuracy)
+        averageResultsHard[y].append(hard_accuracy)
+
         print("Prediction")
         print("Data set:   ", Y_test)
         print("Soft voting:", soft_predict, "\nHard voting:", hard_predict)
@@ -136,3 +143,25 @@ for x in dataSetsNames:
                                                         random_state=42)
 
     ensemble_voting(x)
+
+print("\n")
+print("Average for 20 data-sets is: \n")
+
+for x in range(0,3):
+
+    tmp = averageResultsSoft[x]
+    tmp2 = sum(tmp) / len(tmp)
+
+    tmp3 = averageResultsHard[x]
+    tmp4 = sum(tmp3) / len(tmp3)
+
+    print("base_classifiers{}".format(x))
+    print("Soft:")
+    print(tmp2)
+    print("Hard:")
+    print(tmp4)
+    print("\n")
+
+
+
+    
