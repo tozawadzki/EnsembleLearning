@@ -79,9 +79,9 @@ def ensemble_voting(x):
     base_classifiers3 = []
 
     # base_classifiers1 appendings
-    base_classifiers3.append(('KNN', KNeighborsClassifier()))
-    base_classifiers3.append(('DTC', DecisionTreeClassifier()))
-    base_classifiers3.append(('LR', LogisticRegression(max_iter=1000000)))
+    base_classifiers1.append(('KNN', KNeighborsClassifier()))
+    base_classifiers1.append(('DTC', DecisionTreeClassifier()))
+    base_classifiers1.append(('LR', LogisticRegression(max_iter=1000000)))
 
     # base_classifiers2 appendings
     base_classifiers2.append(('LR', LogisticRegression(max_iter=1000000)))
