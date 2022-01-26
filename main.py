@@ -4,13 +4,19 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.svm import SVC
+
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.metrics import accuracy_score
-from sklearn.model_selection import train_test_split
 
-dataSetsNames = [
+from sklearn.model_selection import RepeatedStratifiedKFold
+from sklearn.metrics import accuracy_score
+from sklearn.base import clone
+
+averageResultsSoft = [[], [], []]
+averageResultsHard = [[], [], []]
+
+
+datasets = [
     'data1',
     'data2',
     'data3',
@@ -33,120 +39,62 @@ dataSetsNames = [
     'data20',
 ]
 
-averageResultsSoft = [[], [], []]
-averageResultsHard = [[], [], []]
+for x in datasets:
+    def writeToFile(soft_accuracy, hard_accuracy, y):
+        f = open("results/results_base_classifiers{}.txt".format(y+1), "a")
+        f.write(x)
+        f.write("\n")
+        f.write("Soft voting: ")
+        f.write(str(soft_accuracy))
+        f.write("\n")
+        f.write("Hard voting: ")
+        f.write(str(hard_accuracy))
+        f.write("\n")
+        f.close()
 
+baseClassifiers = []
 
-def writeToFile(soft_accuracy, hard_accuracy, y):
-    f = open("results/results_base_classifiers{}.txt".format(y+1), "a")
-    f.write(x)
-    f.write("\n")
-    f.write("Soft voting: ")
-    f.write(str(soft_accuracy))
-    f.write("\n")
-    f.write("Hard voting: ")
-    f.write(str(hard_accuracy))
-    f.write("\n")
-    f.close()
+baseClassifiers.append(('KNN', KNeighborsClassifier()))
+baseClassifiers.append(('DTC', DecisionTreeClassifier()))
+baseClassifiers.append(('LR', LogisticRegression(max_iter=1000000)))
+baseClassifiers.append(('GNB', GaussianNB()))
+baseClassifiers.append(('SVC', SVC(gamma="auto", probability=True)))
 
+ensemble_voting_soft = VotingClassifier(
+    estimators=baseClassifiers, voting='soft')
+ensemble_voting_hard = VotingClassifier(
+    estimators=baseClassifiers, voting='hard')
 
-def createPlot(soft_predict, Y_test):
-    plt.figure(figsize=(5, 5))
-    plt.scatter(Y_test, soft_predict, c='crimson')
+clfs = {
+    'SOFT': ensemble_voting_soft,
+    'HARD': ensemble_voting_hard,
+}
 
-    p1 = max(max(soft_predict), max(Y_test))
-    p2 = min(min(soft_predict), min(Y_test))
-    plt.plot([p1, p2], [p1, p2], 'b-')
-    plt.xlabel('True Values', fontsize=10)
-    plt.ylabel('Predictions', fontsize=10)
-    plt.axis('equal')
-    plt.show()
+n_datasets = len(datasets)
+n_splits = 5
+n_repeats = 2
+rskf = RepeatedStratifiedKFold(
+    n_splits=n_splits, n_repeats=n_repeats, random_state=42)
 
+scores = np.zeros((len(clfs), n_datasets, n_splits * n_repeats))
 
-def ensemble_voting(x):
+for data_id, dataset in enumerate(datasets):
+    dataset = np.genfromtxt("data/csv/%s.csv" % (dataset), delimiter=",")
+    X = dataset[:, :-1]
+    y = dataset[:, -1].astype(int)
 
-    base_classifiers1 = []
-    base_classifiers2 = []
-    base_classifiers3 = []
+    for fold_id, (train, test) in enumerate(rskf.split(X, y)):
+        for clf_id, clf_name in enumerate(clfs):
+            clf = clone(clfs[clf_name])
+            print(clf)
+            clf.fit(X[train], y[train])
+            y_pred = clf.predict(X[test])
+            scores[clf_id, data_id, fold_id] = accuracy_score(y[test], y_pred)
 
-    base_classifiers1.append(('KNN', KNeighborsClassifier()))
-    base_classifiers1.append(('DTC', DecisionTreeClassifier()))
-    base_classifiers1.append(('LR', LogisticRegression(max_iter=1000000)))
+np.save('results', scores)
 
-    base_classifiers2.append(('LR', LogisticRegression(max_iter=1000000)))
-    base_classifiers2.append(('GNB', GaussianNB()))
-    base_classifiers2.append(('SVC', SVC(gamma="auto", probability=True)))
+scores = np.load('results.npy')
+print("\nScores:\n", scores.shape)
 
-    base_classifiers3.append(('KNN', KNeighborsClassifier()))
-    base_classifiers3.append(('DTC', DecisionTreeClassifier()))
-    base_classifiers3.append(('LR', LogisticRegression(max_iter=1000000)))
-    base_classifiers3.append(('GNB', GaussianNB()))
-    base_classifiers3.append(('SVC', SVC(gamma="auto", probability=True)))
-
-    base_classifiers = []
-    base_classifiers.append(base_classifiers1)
-    base_classifiers.append(base_classifiers2)
-    base_classifiers.append(base_classifiers3)
-
-    for y in range(0, len(base_classifiers)):
-
-        currentClassifiers = base_classifiers[y]
-
-        ensemble_voting_soft = VotingClassifier(
-            estimators=currentClassifiers, voting='soft')
-        ensemble_voting_soft.fit(X_train, Y_train)
-
-        ensemble_voting_hard = VotingClassifier(
-            estimators=currentClassifiers, voting='hard')
-        ensemble_voting_hard.fit(X_train, Y_train)
-
-        soft_predict = ensemble_voting_soft.predict(X_test)
-        hard_predict = ensemble_voting_hard.predict(X_test)
-
-        soft_accuracy = accuracy_score(Y_test, soft_predict)
-        hard_accuracy = accuracy_score(Y_test, hard_predict)
-
-        averageResultsSoft[y].append(soft_accuracy)
-        averageResultsHard[y].append(hard_accuracy)
-
-        print("Prediction")
-        print("Data set:   ", Y_test)
-        print("Soft voting:", soft_predict, "\nHard voting:", hard_predict)
-        print("Accuracy")
-        print("Soft voting:", soft_accuracy, "\nHard voting:", hard_accuracy)
-
-        writeToFile(soft_accuracy, hard_accuracy, y)
-        #createPlot(soft_predict, Y_test)
-
-
-for x in dataSetsNames:
-
-    df = pd.read_excel("data\{}.xls".format(x), sheet_name="Sheet1")
-    X = np.array(df, dtype='float32')
-    Y = np.array(pd.read_excel("data\{}.xls".format(x), sheet_name="Sheet2"))
-    Y = Y.ravel()
-
-    X_train, X_test, Y_train, Y_test = train_test_split(X,
-                                                        Y,
-                                                        test_size=0.20,
-                                                        random_state=42)
-
-    ensemble_voting(x)
-
-print("\n")
-print("Average for 20 data-sets is: \n")
-
-for x in range(0, 3):
-
-    tmp = averageResultsSoft[x]
-    tmp2 = sum(tmp) / len(tmp)
-
-    tmp3 = averageResultsHard[x]
-    tmp4 = sum(tmp3) / len(tmp3)
-
-    print("base_classifiers{}".format(x))
-    print("Soft:")
-    print(tmp2)
-    print("Hard:")
-    print(tmp4)
-    print("\n")
+mean_scores = np.mean(scores, axis=2).T
+print("\nMean scores:\n", mean_scores)
