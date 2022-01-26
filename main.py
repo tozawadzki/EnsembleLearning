@@ -1,4 +1,3 @@
-# Potrzebne biblioteki
 from sklearn.ensemble import VotingClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
@@ -11,7 +10,6 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
-# Nazwy zbiorow danych
 dataSetsNames = [
     'data1',
     'data2',
@@ -35,11 +33,8 @@ dataSetsNames = [
     'data20',
 ]
 
-# Average results
 averageResultsSoft = [[], [], []]
 averageResultsHard = [[], [], []]
-
-# Zapis wynikow do pliku
 
 
 def writeToFile(soft_accuracy, hard_accuracy, y):
@@ -54,8 +49,6 @@ def writeToFile(soft_accuracy, hard_accuracy, y):
     f.write("\n")
     f.close()
 
-# Generowanie wykresów
-
 
 def createPlot(soft_predict, Y_test):
     plt.figure(figsize=(5, 5))
@@ -69,8 +62,6 @@ def createPlot(soft_predict, Y_test):
     plt.axis('equal')
     plt.show()
 
-# Dunkcja do badań
-
 
 def ensemble_voting(x):
 
@@ -78,24 +69,20 @@ def ensemble_voting(x):
     base_classifiers2 = []
     base_classifiers3 = []
 
-    # base_classifiers1 appendings
     base_classifiers1.append(('KNN', KNeighborsClassifier()))
     base_classifiers1.append(('DTC', DecisionTreeClassifier()))
     base_classifiers1.append(('LR', LogisticRegression(max_iter=1000000)))
 
-    # base_classifiers2 appendings
     base_classifiers2.append(('LR', LogisticRegression(max_iter=1000000)))
     base_classifiers2.append(('GNB', GaussianNB()))
     base_classifiers2.append(('SVC', SVC(gamma="auto", probability=True)))
 
-    # base_classifiers3 appendings
     base_classifiers3.append(('KNN', KNeighborsClassifier()))
     base_classifiers3.append(('DTC', DecisionTreeClassifier()))
     base_classifiers3.append(('LR', LogisticRegression(max_iter=1000000)))
     base_classifiers3.append(('GNB', GaussianNB()))
     base_classifiers3.append(('SVC', SVC(gamma="auto", probability=True)))
 
-    # Final appending
     base_classifiers = []
     base_classifiers.append(base_classifiers1)
     base_classifiers.append(base_classifiers2)
