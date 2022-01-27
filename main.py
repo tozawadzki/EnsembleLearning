@@ -12,13 +12,9 @@ from sklearn.model_selection import RepeatedStratifiedKFold
 from sklearn.metrics import accuracy_score
 from sklearn.base import clone
 
-averageResultsSoft = [[], [], []]
-averageResultsHard = [[], [], []]
-
-
 datasets = [
-    # 'data1',
-    # 'data2',
+    'data1',
+    'data2',
     # 'data3',
     # 'data4',
     # 'data5',
@@ -37,21 +33,7 @@ datasets = [
     # 'data18',
     # 'data19',
     # 'data20',
-    'data21',
 ]
-
-for x in datasets:
-    def writeToFile(soft_accuracy, hard_accuracy, y):
-        f = open("results/results_base_classifiers{}.txt".format(y+1), "a")
-        f.write(x)
-        f.write("\n")
-        f.write("Soft voting: ")
-        f.write(str(soft_accuracy))
-        f.write("\n")
-        f.write("Hard voting: ")
-        f.write(str(hard_accuracy))
-        f.write("\n")
-        f.close()
 
 base1 = []
 base2 = []
@@ -103,18 +85,16 @@ n_repeats = 2
 rskf = RepeatedStratifiedKFold(
     n_splits=n_splits, n_repeats=n_repeats, random_state=42)
 
-scores = np.zeros((len(clfs1), n_datasets, n_splits * n_repeats))
+scores = np.zeros((len(clfs2), n_datasets, n_splits * n_repeats))
 
 for data_id, dataset in enumerate(datasets):
-    dataset = np.genfromtxt("data/csv/%s.csv" %
+    dataset = np.genfromtxt("data/%s.csv" %
                             (dataset), delimiter=",")
     X = dataset[:, :-1]
     y = dataset[:, -1].astype(int)
-    print(X)
-    print(y)
     for fold_id, (train, test) in enumerate(rskf.split(X, y)):
-        for clf_id, clf_name in enumerate(clfs1):
-            clf = clone(clfs1[clf_name])
+        for clf_id, clf_name in enumerate(clfs2):
+            clf = clone(clfs2[clf_name])
             clf.fit(X[train], y[train])
             y_pred = clf.predict(X[test])
             scores[clf_id, data_id, fold_id] = accuracy_score(y[test], y_pred)
