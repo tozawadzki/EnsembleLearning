@@ -11,28 +11,11 @@ import numpy as np
 from sklearn.model_selection import RepeatedStratifiedKFold
 from sklearn.metrics import accuracy_score
 from sklearn.base import clone
+from scipy.stats import ttest_rel
+from tabulate import tabulate
 
 datasets = [
     'data1',
-    'data2',
-    # 'data3',
-    # 'data4',
-    # 'data5',
-    # 'data6',
-    # 'data7',
-    # 'data8',
-    # 'data9',
-    # 'data10',
-    # 'data11',
-    # 'data12',
-    # 'data13',
-    # 'data14',
-    # 'data15',
-    # 'data16',
-    # 'data17',
-    # 'data18',
-    # 'data19',
-    # 'data20',
 ]
 
 base1 = []
@@ -85,7 +68,7 @@ n_repeats = 2
 rskf = RepeatedStratifiedKFold(
     n_splits=n_splits, n_repeats=n_repeats, random_state=42)
 
-scores = np.zeros((len(clfs2), n_datasets, n_splits * n_repeats))
+scores = np.zeros((len(clfs1), n_datasets, n_splits * n_repeats))
 
 for data_id, dataset in enumerate(datasets):
     dataset = np.genfromtxt("data/%s.csv" %
@@ -93,8 +76,8 @@ for data_id, dataset in enumerate(datasets):
     X = dataset[:, :-1]
     y = dataset[:, -1].astype(int)
     for fold_id, (train, test) in enumerate(rskf.split(X, y)):
-        for clf_id, clf_name in enumerate(clfs2):
-            clf = clone(clfs2[clf_name])
+        for clf_id, clf_name in enumerate(clfs1):
+            clf = clone(clfs1[clf_name])
             clf.fit(X[train], y[train])
             y_pred = clf.predict(X[test])
             scores[clf_id, data_id, fold_id] = accuracy_score(y[test], y_pred)
@@ -106,3 +89,30 @@ print("\nScores:\n", scores.shape)
 
 mean_scores = np.mean(scores, axis=2).T
 print("\nMean scores:\n", mean_scores)
+
+
+alfa = .05
+t_statistic = np.zeros((len(clfs1), len(clfs1)))
+p_value = np.zeros((len(clfs1), len(clfs1)))
+
+for i in range(len(clfs1)):
+    for j in range(len(clfs1)):
+        t_statistic[i, j], p_value[i, j] = ttest_rel(scores[i], scores[j])
+
+headers = ["Z1", "Z2", "Z3"]
+names_column = np.array([["Z1"], ["Z2"], ["Z3"]])
+
+advantage = np.zeros((len(clfs1), len(clfs1)))
+advantage[t_statistic > 0] = 1
+advantage_table = tabulate(np.concatenate(
+    (names_column, advantage), axis=1), headers)
+
+significance = np.zeros((len(clfs1), len(clfs1)))
+significance[p_value <= alfa] = 1
+significance_table = tabulate(np.concatenate(
+    (names_column, significance), axis=1), headers)
+
+stat_better = significance * advantage
+stat_better_table = tabulate(np.concatenate(
+    (names_column, stat_better), axis=1), headers)
+print("Statistically significantly better:\n", stat_better_table)
