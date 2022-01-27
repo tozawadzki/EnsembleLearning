@@ -17,26 +17,27 @@ averageResultsHard = [[], [], []]
 
 
 datasets = [
-    'data1',
-    'data2',
-    'data3',
-    'data4',
-    'data5',
-    'data6',
-    'data7',
-    'data8',
-    'data9',
-    'data10',
-    'data11',
-    'data12',
-    'data13',
-    'data14',
-    'data15',
-    'data16',
-    'data17',
-    'data18',
-    'data19',
-    'data20',
+    # 'data1',
+    # 'data2',
+    # 'data3',
+    # 'data4',
+    # 'data5',
+    # 'data6',
+    # 'data7',
+    # 'data8',
+    # 'data9',
+    # 'data10',
+    # 'data11',
+    # 'data12',
+    # 'data13',
+    # 'data14',
+    # 'data15',
+    # 'data16',
+    # 'data17',
+    # 'data18',
+    # 'data19',
+    # 'data20',
+    'data21',
 ]
 
 for x in datasets:
@@ -114,7 +115,6 @@ for data_id, dataset in enumerate(datasets):
     for fold_id, (train, test) in enumerate(rskf.split(X, y)):
         for clf_id, clf_name in enumerate(clfs1):
             clf = clone(clfs1[clf_name])
-            print(clf)
             clf.fit(X[train], y[train])
             y_pred = clf.predict(X[test])
             scores[clf_id, data_id, fold_id] = accuracy_score(y[test], y_pred)
