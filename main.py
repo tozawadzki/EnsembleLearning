@@ -34,11 +34,11 @@ base3.append(('GNB', GaussianNB()))
 base3.append(('SVC', SVC(gamma="auto", probability=True)))
 
 clf1_hard = VotingClassifier(
-    estimators=base1, voting='hard')
+    estimators=base1, voting='soft')
 clf2_hard = VotingClassifier(
-    estimators=base1, voting='hard')
+    estimators=base1, voting='soft')
 clf3_hard = VotingClassifier(
-    estimators=base1, voting='hard')
+    estimators=base1, voting='soft')
 
 clfs1 = {
     'Z1': clf1_hard,
@@ -59,7 +59,7 @@ clfs2 = {
     'Z3': clf3_soft,
 }
 
-dataset = 'data7'
+dataset = 'data1'
 dataset = np.genfromtxt("data/%s.csv" % (dataset), delimiter=",")
 X = dataset[:, :-1]
 y = dataset[:, -1].astype(int)
