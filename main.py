@@ -52,22 +52,48 @@ for x in datasets:
         f.write("\n")
         f.close()
 
-baseClassifiers = []
+base1 = []
+base2 = []
+base3 = []
 
-baseClassifiers.append(('KNN', KNeighborsClassifier()))
-baseClassifiers.append(('DTC', DecisionTreeClassifier()))
-baseClassifiers.append(('LR', LogisticRegression(max_iter=1000000)))
-baseClassifiers.append(('GNB', GaussianNB()))
-baseClassifiers.append(('SVC', SVC(gamma="auto", probability=True)))
+base1.append(('KNN', KNeighborsClassifier()))
+base1.append(('DTC', DecisionTreeClassifier()))
+base1.append(('LR', LogisticRegression(max_iter=1000000)))
 
-ensemble_voting_soft = VotingClassifier(
-    estimators=baseClassifiers, voting='soft')
-ensemble_voting_hard = VotingClassifier(
-    estimators=baseClassifiers, voting='hard')
+base2.append(('LR', LogisticRegression(max_iter=1000000)))
+base2.append(('GNB', GaussianNB()))
+base2.append(('SVC', SVC(gamma="auto", probability=True)))
 
-clfs = {
-    'SOFT': ensemble_voting_soft,
-    'HARD': ensemble_voting_hard,
+base3.append(('KNN', KNeighborsClassifier()))
+base3.append(('DTC', DecisionTreeClassifier()))
+base3.append(('LR', LogisticRegression(max_iter=1000000)))
+base3.append(('GNB', GaussianNB()))
+base3.append(('SVC', SVC(gamma="auto", probability=True)))
+
+clf1_hard = VotingClassifier(
+    estimators=base1, voting='hard')
+clf2_hard = VotingClassifier(
+    estimators=base1, voting='hard')
+clf3_hard = VotingClassifier(
+    estimators=base1, voting='hard')
+
+clfs1 = {
+    'Z1': clf1_hard,
+    'Z2': clf2_hard,
+    'Z3': clf3_hard,
+}
+
+clf1_soft = VotingClassifier(
+    estimators=base1, voting='soft')
+clf2_soft = VotingClassifier(
+    estimators=base1, voting='soft')
+clf3_soft = VotingClassifier(
+    estimators=base1, voting='soft')
+
+clfs2 = {
+    'Z1': clf1_soft,
+    'Z2': clf2_soft,
+    'Z3': clf3_soft,
 }
 
 n_datasets = len(datasets)
@@ -76,16 +102,18 @@ n_repeats = 2
 rskf = RepeatedStratifiedKFold(
     n_splits=n_splits, n_repeats=n_repeats, random_state=42)
 
-scores = np.zeros((len(clfs), n_datasets, n_splits * n_repeats))
+scores = np.zeros((len(clfs1), n_datasets, n_splits * n_repeats))
 
 for data_id, dataset in enumerate(datasets):
-    dataset = np.genfromtxt("data/csv/%s.csv" % (dataset), delimiter=",")
+    dataset = np.genfromtxt("data/csv/%s.csv" %
+                            (dataset), delimiter=",")
     X = dataset[:, :-1]
     y = dataset[:, -1].astype(int)
-
+    print(X)
+    print(y)
     for fold_id, (train, test) in enumerate(rskf.split(X, y)):
-        for clf_id, clf_name in enumerate(clfs):
-            clf = clone(clfs[clf_name])
+        for clf_id, clf_name in enumerate(clfs1):
+            clf = clone(clfs1[clf_name])
             print(clf)
             clf.fit(X[train], y[train])
             y_pred = clf.predict(X[test])
