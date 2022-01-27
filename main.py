@@ -13,6 +13,8 @@ from sklearn.metrics import accuracy_score
 from sklearn.base import clone
 from scipy.stats import ttest_rel
 from tabulate import tabulate
+from scipy.stats import rankdata
+from scipy.stats import ranksums
 
 datasets = [
     'data1',
@@ -90,29 +92,36 @@ print("\nScores:\n", scores.shape)
 mean_scores = np.mean(scores, axis=2).T
 print("\nMean scores:\n", mean_scores)
 
+ranks = []
+for ms in mean_scores:
+    ranks.append(rankdata(ms).tolist())
+ranks = np.array(ranks)
+print("\nRanks:\n", ranks)
+
+mean_ranks = np.mean(ranks, axis=0)
+print("\nMean ranks:\n", mean_ranks)
 
 alfa = .05
-t_statistic = np.zeros((len(clfs1), len(clfs1)))
+w_statistic = np.zeros((len(clfs1), len(clfs1)))
 p_value = np.zeros((len(clfs1), len(clfs1)))
 
 for i in range(len(clfs1)):
     for j in range(len(clfs1)):
-        t_statistic[i, j], p_value[i, j] = ttest_rel(scores[i], scores[j])
+        w_statistic[i, j], p_value[i, j] = ranksums(ranks.T[i], ranks.T[j])
 
-headers = ["Z1", "Z2", "Z3"]
-names_column = np.array([["Z1"], ["Z2"], ["Z3"]])
+headers = list(clfs1.keys())
+names_column = np.expand_dims(np.array(list(clfs1.keys())), axis=1)
 
 advantage = np.zeros((len(clfs1), len(clfs1)))
-advantage[t_statistic > 0] = 1
+advantage[w_statistic > 0] = 1
 advantage_table = tabulate(np.concatenate(
     (names_column, advantage), axis=1), headers)
+print("\nAdvantage:\n", advantage_table)
 
 significance = np.zeros((len(clfs1), len(clfs1)))
 significance[p_value <= alfa] = 1
 significance_table = tabulate(np.concatenate(
     (names_column, significance), axis=1), headers)
+print("\nStatistical significance (alpha = 0.05):\n", significance_table)
 
-stat_better = significance * advantage
-stat_better_table = tabulate(np.concatenate(
-    (names_column, stat_better), axis=1), headers)
-print("Statistically significantly better:\n", stat_better_table)
+print('Wilcoxon', w_statistic)
