@@ -14,9 +14,6 @@ from sklearn.base import clone
 from scipy.stats import ttest_rel
 from tabulate import tabulate
 
-datasets = [
-    'data1',
-]
 
 base1 = []
 base2 = []
@@ -62,34 +59,34 @@ clfs2 = {
     'Z3': clf3_soft,
 }
 
-n_datasets = len(datasets)
+dataset = 'data7'
+dataset = np.genfromtxt("data/%s.csv" % (dataset), delimiter=",")
+X = dataset[:, :-1]
+y = dataset[:, -1].astype(int)
+
 n_splits = 5
 n_repeats = 2
 rskf = RepeatedStratifiedKFold(
     n_splits=n_splits, n_repeats=n_repeats, random_state=42)
+scores = np.zeros((len(clfs1), n_splits * n_repeats))
 
-scores = np.zeros((len(clfs1), n_datasets, n_splits * n_repeats))
+for fold_id, (train, test) in enumerate(rskf.split(X, y)):
+    for clf_id, clf_name in enumerate(clfs1):
+        clf = clone(clfs1[clf_name])
+        clf.fit(X[train], y[train])
+        y_pred = clf.predict(X[test])
+        scores[clf_id, fold_id] = accuracy_score(y[test], y_pred)
 
-for data_id, dataset in enumerate(datasets):
-    dataset = np.genfromtxt("data/%s.csv" %
-                            (dataset), delimiter=",")
-    X = dataset[:, :-1]
-    y = dataset[:, -1].astype(int)
-    for fold_id, (train, test) in enumerate(rskf.split(X, y)):
-        for clf_id, clf_name in enumerate(clfs1):
-            clf = clone(clfs1[clf_name])
-            clf.fit(X[train], y[train])
-            y_pred = clf.predict(X[test])
-            scores[clf_id, data_id, fold_id] = accuracy_score(y[test], y_pred)
+mean = np.mean(scores, axis=1)
+std = np.std(scores, axis=1)
+
+for clf_id, clf_name in enumerate(clfs1):
+    print("%s: %.3f (%.2f)" % (clf_name, mean[clf_id], std[clf_id]))
 
 np.save('results', scores)
 
 scores = np.load('results.npy')
-print("\nScores:\n", scores.shape)
-
-mean_scores = np.mean(scores, axis=2).T
-print("\nMean scores:\n", mean_scores)
-
+print("Folds:\n", scores)
 
 alfa = .05
 t_statistic = np.zeros((len(clfs1), len(clfs1)))
