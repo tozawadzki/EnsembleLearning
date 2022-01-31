@@ -14,6 +14,9 @@ from sklearn.base import clone
 from scipy.stats import ttest_rel
 from tabulate import tabulate
 
+from scipy.stats import rankdata
+from scipy.stats import ranksums
+
 def writeToFile(stat_better_table, currentDataSet, tmpStr, scoresToFile):
     f = open("results/results_{}.txt".format(tmpStr), "a")
   
@@ -93,6 +96,7 @@ for currentClfs in clfs:
 
     tmpStr = currentClfs['Z1'].voting
 
+    # t-Student
     for currentDataSet in dataSets:
         
         scoresToFile = [ ] 
@@ -156,3 +160,66 @@ for currentClfs in clfs:
         print("Statistically significantly better:\n", stat_better_table)
 
         writeToFile(stat_better_table, currentDataSet, tmpStr, scoresToFile)
+
+    # Wilcoxon
+    n_datasets = len(dataSets)
+    n_splits = 5
+    n_repeats = 2
+    rskf = RepeatedStratifiedKFold(
+        n_splits=n_splits, n_repeats=n_repeats, random_state=42)
+
+    scores = np.zeros((len(currentClfs), n_datasets, n_splits * n_repeats))
+
+    for data_id, dataset in enumerate(dataSets):
+        dataset = np.genfromtxt("data/%s.csv" %
+                                (dataset), delimiter=",")
+        X = dataset[:, :-1]
+        y = dataset[:, -1].astype(int)
+        for fold_id, (train, test) in enumerate(rskf.split(X, y)):
+            for clf_id, clf_name in enumerate(currentClfs):
+                clf = clone(currentClfs[clf_name])
+                clf.fit(X[train], y[train])
+                y_pred = clf.predict(X[test])
+                scores[clf_id, data_id, fold_id] = accuracy_score(y[test], y_pred)
+
+    np.save('results', scores)
+
+    scores = np.load('results.npy')
+    print("\nScores:\n", scores.shape)
+
+    mean_scores = np.mean(scores, axis=2).T
+    print("\nMean scores:\n", mean_scores)
+
+    ranks = []
+    for ms in mean_scores:
+        ranks.append(rankdata(ms).tolist())
+    ranks = np.array(ranks)
+    print("\nRanks:\n", ranks)
+
+    mean_ranks = np.mean(ranks, axis=0)
+    print("\nMean ranks:\n", mean_ranks)
+
+    alfa = .05
+    w_statistic = np.zeros((len(currentClfs), len(currentClfs)))
+    p_value = np.zeros((len(currentClfs), len(currentClfs)))
+
+    for i in range(len(currentClfs)):
+        for j in range(len(currentClfs)):
+            w_statistic[i, j], p_value[i, j] = ranksums(ranks.T[i], ranks.T[j])
+
+    headers = list(currentClfs.keys())
+    names_column = np.expand_dims(np.array(list(currentClfs.keys())), axis=1)
+
+    advantage = np.zeros((len(currentClfs), len(currentClfs)))
+    advantage[w_statistic > 0] = 1
+    advantage_table = tabulate(np.concatenate(
+        (names_column, advantage), axis=1), headers)
+    print("\nAdvantage:\n", advantage_table)
+
+    significance = np.zeros((len(currentClfs), len(currentClfs)))
+    significance[p_value <= alfa] = 1
+    significance_table = tabulate(np.concatenate(
+        (names_column, significance), axis=1), headers)
+    print("\nStatistical significance (alpha = 0.05):\n", significance_table)
+
+    print('Wilcoxon', w_statistic)
