@@ -41,7 +41,7 @@ def writeToFile(stat_better_table, currentDataSet, tmpStr, scoresToFile):
     
     f.close()
 
-dataSets = [ 'data1']#, 'data2']#, 'data3', 'data4', 'data5']#,
+dataSets = [ 'data1' , 'data2']#, 'data3', 'data4', 'data5']#,
            #  'data6', 'data7', 'data8', 'data9', 'data10',
            #  'data11', 'data12', 'data13', 'data14', 'data15',
            #  'data16', 'data17', 'data18', 'data19', 'data20']
@@ -162,6 +162,11 @@ for currentClfs in clfs:
         writeToFile(stat_better_table, currentDataSet, tmpStr, scoresToFile)
 
     # Wilcoxon
+
+    print("\n")
+    print("****************************** START")
+    print("\n")
+
     n_datasets = len(dataSets)
     n_splits = 5
     n_repeats = 2
@@ -223,3 +228,7 @@ for currentClfs in clfs:
     print("\nStatistical significance (alpha = 0.05):\n", significance_table)
 
     print('Wilcoxon', w_statistic)
+
+    print("\n")
+    print("****************************** STOP")
+    print("\n")
