@@ -41,6 +41,25 @@ def writeToFile(stat_better_table, currentDataSet, tmpStr, scoresToFile):
     
     f.close()
 
+def writeToFile2(tmpStr, meanRanks, advantage_table, significance_table, w_statistic):
+    f = open("results/results_wilcoxon_{}.txt".format(tmpStr), "a")
+  
+    f.write("\n")
+    f.write("Mean ranks :")
+    f.write(str(meanRanks))
+    f.write("\n")
+    f.write("Advantage :")
+    f.write(str(advantage_table))
+    f.write("\n")
+    f.write("Statistical significance :")
+    f.write(str(significance_table))
+    f.write("\n")
+    f.write("w_statistic :")
+    f.write(str(w_statistic))
+    f.write("\n")    
+
+    f.close()
+
 dataSets = [ 'data1' , 'data2']#, 'data3', 'data4', 'data5']#,
            #  'data6', 'data7', 'data8', 'data9', 'data10',
            #  'data11', 'data12', 'data13', 'data14', 'data15',
@@ -232,3 +251,5 @@ for currentClfs in clfs:
     print("\n")
     print("****************************** STOP")
     print("\n")
+
+    writeToFile2(tmpStr, mean_ranks, advantage_table, significance_table, w_statistic)
