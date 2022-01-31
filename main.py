@@ -5,7 +5,6 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.svm import SVC
 
-import pandas as pd
 import numpy as np
 
 from sklearn.model_selection import RepeatedStratifiedKFold
@@ -17,16 +16,17 @@ from tabulate import tabulate
 from scipy.stats import rankdata
 from scipy.stats import ranksums
 
+
 def writeToFile(stat_better_table, currentDataSet, tmpStr, scoresToFile):
     f = open("results/results_{}.txt".format(tmpStr), "a")
-  
+
     f.write("\n")
     f.write(currentDataSet)
     f.write("\n")
     f.write(tmpStr)
     f.write("\n")
 
-    for i in range(0,9,3):
+    for i in range(0, 9, 3):
 
         f.write(scoresToFile[i] + " ")
         f.write("{:.3f}".format(scoresToFile[i+1]) + " ")
@@ -38,12 +38,13 @@ def writeToFile(stat_better_table, currentDataSet, tmpStr, scoresToFile):
     f.write("\n")
     f.write(stat_better_table)
     f.write("\n")
-    
+
     f.close()
+
 
 def writeToFile2(tmpStr, meanRanks, advantage_table, significance_table, w_statistic):
     f = open("results/results_wilcoxon_{}.txt".format(tmpStr), "a")
-  
+
     f.write("\n")
     f.write("Mean ranks :")
     f.write(str(meanRanks))
@@ -56,14 +57,31 @@ def writeToFile2(tmpStr, meanRanks, advantage_table, significance_table, w_stati
     f.write("\n")
     f.write("w_statistic :")
     f.write(str(w_statistic))
-    f.write("\n")    
+    f.write("\n")
 
     f.close()
 
-dataSets = [ 'data1' , 'data2']#, 'data3', 'data4', 'data5']#,
-           #  'data6', 'data7', 'data8', 'data9', 'data10',
-           #  'data11', 'data12', 'data13', 'data14', 'data15',
-           #  'data16', 'data17', 'data18', 'data19', 'data20']
+
+dataSets = ['data1',
+            'data2',
+            'data3',
+            'data4',
+            'data5',
+            'data6',
+            'data7',
+            'data8',
+            'data9',
+            'data10',
+            'data11',
+            'data12',
+            'data13',
+            'data14',
+            'data15',
+            'data16',
+            'data17',
+            'data18',
+            'data19',
+            'data20']
 
 base1 = []
 base2 = []
@@ -109,7 +127,7 @@ clfs2 = {
     'Z3': clf3_soft,
 }
 
-clfs = [ clfs1, clfs2 ]
+clfs = [clfs1, clfs2]
 
 for currentClfs in clfs:
 
@@ -117,8 +135,8 @@ for currentClfs in clfs:
 
     # t-Student
     for currentDataSet in dataSets:
-        
-        scoresToFile = [ ] 
+
+        scoresToFile = []
 
         dataset = currentDataSet
         dataset = np.genfromtxt("data/%s.csv" % (dataset), delimiter=",")
@@ -158,7 +176,8 @@ for currentClfs in clfs:
 
         for i in range(len(currentClfs)):
             for j in range(len(currentClfs)):
-                t_statistic[i, j], p_value[i, j] = ttest_rel(scores[i], scores[j])
+                t_statistic[i, j], p_value[i, j] = ttest_rel(
+                    scores[i], scores[j])
 
         headers = ["Z1", "Z2", "Z3"]
         names_column = np.array([["Z1"], ["Z2"], ["Z3"]])
@@ -204,7 +223,8 @@ for currentClfs in clfs:
                 clf = clone(currentClfs[clf_name])
                 clf.fit(X[train], y[train])
                 y_pred = clf.predict(X[test])
-                scores[clf_id, data_id, fold_id] = accuracy_score(y[test], y_pred)
+                scores[clf_id, data_id, fold_id] = accuracy_score(
+                    y[test], y_pred)
 
     np.save('results', scores)
 
@@ -252,4 +272,5 @@ for currentClfs in clfs:
     print("****************************** STOP")
     print("\n")
 
-    writeToFile2(tmpStr, mean_ranks, advantage_table, significance_table, w_statistic)
+    writeToFile2(tmpStr, mean_ranks, advantage_table,
+                 significance_table, w_statistic)

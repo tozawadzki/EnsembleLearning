@@ -1,0 +1,260 @@
+
+data1
+hard
+Z1 0.831 (0.09)
+Z2 0.887 (0.04)
+Z3 0.869 (0.05)
+
+Statistically significantly better: 
+      Z1    Z2    Z3
+--  ----  ----  ----
+Z1     0     0     0
+Z2     0     0     0
+Z3     0     0     0
+
+data2
+hard
+Z1 0.843 (0.03)
+Z2 0.811 (0.02)
+Z3 0.812 (0.02)
+
+Statistically significantly better: 
+      Z1    Z2    Z3
+--  ----  ----  ----
+Z1     0     1     1
+Z2     0     0     0
+Z3     0     0     0
+
+data3
+hard
+Z1 0.880 (0.03)
+Z2 0.780 (0.03)
+Z3 0.893 (0.03)
+
+Statistically significantly better: 
+      Z1    Z2    Z3
+--  ----  ----  ----
+Z1     0     1     0
+Z2     0     0     0
+Z3     0     1     0
+
+data4
+hard
+Z1 0.788 (0.01)
+Z2 0.783 (0.02)
+Z3 0.783 (0.02)
+
+Statistically significantly better: 
+      Z1    Z2    Z3
+--  ----  ----  ----
+Z1     0     1     1
+Z2     0     0     0
+Z3     0     0     0
+
+data5
+hard
+Z1 0.788 (0.05)
+Z2 0.820 (0.04)
+Z3 0.802 (0.05)
+
+Statistically significantly better: 
+      Z1    Z2    Z3
+--  ----  ----  ----
+Z1     0     0     0
+Z2     1     0     1
+Z3     0     0     0
+
+data6
+hard
+Z1 0.769 (0.06)
+Z2 0.629 (0.07)
+Z3 0.754 (0.04)
+
+Statistically significantly better: 
+      Z1    Z2    Z3
+--  ----  ----  ----
+Z1     0     1     0
+Z2     0     0     0
+Z3     0     1     0
+
+data7
+hard
+Z1 0.972 (0.01)
+Z2 0.929 (0.02)
+Z3 0.969 (0.01)
+
+Statistically significantly better: 
+      Z1    Z2    Z3
+--  ----  ----  ----
+Z1     0     1     0
+Z2     0     0     0
+Z3     0     1     0
+
+data8
+hard
+Z1 0.709 (0.05)
+Z2 0.718 (0.05)
+Z3 0.718 (0.04)
+
+Statistically significantly better: 
+      Z1    Z2    Z3
+--  ----  ----  ----
+Z1     0     0     0
+Z2     0     0     0
+Z3     0     0     0
+
+data9
+hard
+Z1 0.955 (0.03)
+Z2 0.955 (0.04)
+Z3 0.965 (0.04)
+
+Statistically significantly better: 
+      Z1    Z2    Z3
+--  ----  ----  ----
+Z1     0     0     0
+Z2     0     0     0
+Z3     0     0     0
+
+data10
+hard
+Z1 0.877 (0.01)
+Z2 0.795 (0.01)
+Z3 0.851 (0.01)
+
+Statistically significantly better: 
+      Z1    Z2    Z3
+--  ----  ----  ----
+Z1     0     1     1
+Z2     0     0     0
+Z3     0     1     0
+
+data11
+hard
+Z1 0.951 (0.02)
+Z2 0.939 (0.02)
+Z3 0.948 (0.02)
+
+Statistically significantly better: 
+      Z1    Z2    Z3
+--  ----  ----  ----
+Z1     0     0     0
+Z2     0     0     0
+Z3     0     1     0
+
+data12
+hard
+Z1 0.579 (0.03)
+Z2 0.495 (0.04)
+Z3 0.573 (0.03)
+
+Statistically significantly better: 
+      Z1    Z2    Z3
+--  ----  ----  ----
+Z1     0     1     0
+Z2     0     0     0
+Z3     0     1     0
+
+data13
+hard
+Z1 0.578 (0.01)
+Z2 0.549 (0.01)
+Z3 0.595 (0.01)
+
+Statistically significantly better: 
+      Z1    Z2    Z3
+--  ----  ----  ----
+Z1     0     1     0
+Z2     0     0     0
+Z3     1     1     0
+
+data14
+hard
+Z1 0.974 (0.00)
+Z2 0.978 (0.00)
+Z3 0.978 (0.00)
+
+Statistically significantly better: 
+      Z1    Z2    Z3
+--  ----  ----  ----
+Z1     0     0     0
+Z2     1     0     0
+Z3     1     0     0
+
+data15
+hard
+Z1 0.828 (0.01)
+Z2 0.847 (0.01)
+Z3 0.844 (0.01)
+
+Statistically significantly better: 
+      Z1    Z2    Z3
+--  ----  ----  ----
+Z1     0     0     0
+Z2     1     0     0
+Z3     1     0     0
+
+data16
+hard
+Z1 0.985 (0.00)
+Z2 0.964 (0.01)
+Z3 0.977 (0.00)
+
+Statistically significantly better: 
+      Z1    Z2    Z3
+--  ----  ----  ----
+Z1     0     1     1
+Z2     0     0     0
+Z3     0     1     0
+
+data17
+hard
+Z1 0.758 (0.01)
+Z2 0.625 (0.08)
+Z3 0.729 (0.03)
+
+Statistically significantly better: 
+      Z1    Z2    Z3
+--  ----  ----  ----
+Z1     0     1     1
+Z2     0     0     0
+Z3     0     1     0
+
+data18
+hard
+Z1 0.735 (0.04)
+Z2 0.743 (0.03)
+Z3 0.735 (0.03)
+
+Statistically significantly better: 
+      Z1    Z2    Z3
+--  ----  ----  ----
+Z1     0     0     0
+Z2     0     0     0
+Z3     0     0     0
+
+data19
+hard
+Z1 0.992 (0.01)
+Z2 0.915 (0.03)
+Z3 0.972 (0.02)
+
+Statistically significantly better: 
+      Z1    Z2    Z3
+--  ----  ----  ----
+Z1     0     1     1
+Z2     0     0     0
+Z3     0     1     0
+
+data20
+hard
+Z1 0.855 (0.02)
+Z2 0.903 (0.01)
+Z3 0.898 (0.01)
+
+Statistically significantly better: 
+      Z1    Z2    Z3
+--  ----  ----  ----
+Z1     0     0     0
+Z2     1     0     0
+Z3     1     0     0
