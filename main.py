@@ -227,8 +227,8 @@ for currentClfs in clfs:
                 scores[clf_id, data_id, fold_id] = accuracy_score(
                     y[test], y_pred)
 
-    print("Dzialam dalej\n")
-    print(data_id)
+        print("Dzialam dalej\n")
+        print(data_id)
 
     np.save('results', scores)
 
