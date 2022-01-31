@@ -127,13 +127,14 @@ clfs2 = {
     'Z3': clf3_soft,
 }
 
-clfs = [clfs1, clfs2]
+clfs = [ clfs2]
 
 for currentClfs in clfs:
 
     tmpStr = currentClfs['Z1'].voting
 
     # t-Student
+    """
     for currentDataSet in dataSets:
 
         scoresToFile = []
@@ -198,7 +199,7 @@ for currentClfs in clfs:
         print("Statistically significantly better:\n", stat_better_table)
 
         writeToFile(stat_better_table, currentDataSet, tmpStr, scoresToFile)
-
+    """   
     # Wilcoxon
 
     print("\n")
@@ -225,6 +226,9 @@ for currentClfs in clfs:
                 y_pred = clf.predict(X[test])
                 scores[clf_id, data_id, fold_id] = accuracy_score(
                     y[test], y_pred)
+
+    print("Dzialam dalej\n")
+    print(data_id)
 
     np.save('results', scores)
 
