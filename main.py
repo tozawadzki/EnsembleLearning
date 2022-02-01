@@ -133,8 +133,6 @@ for currentClfs in clfs:
 
     tmpStr = currentClfs['Z1'].voting
 
-    # t-Student
-    """
     for currentDataSet in dataSets:
 
         scoresToFile = []
@@ -199,12 +197,6 @@ for currentClfs in clfs:
         print("Statistically significantly better:\n", stat_better_table)
 
         writeToFile(stat_better_table, currentDataSet, tmpStr, scoresToFile)
-    """   
-    # Wilcoxon
-
-    print("\n")
-    print("****************************** START")
-    print("\n")
 
     n_datasets = len(dataSets)
     n_splits = 5
@@ -226,10 +218,6 @@ for currentClfs in clfs:
                 y_pred = clf.predict(X[test])
                 scores[clf_id, data_id, fold_id] = accuracy_score(
                     y[test], y_pred)
-
-            print(dataset)
-            print("Dzialam dalej\n")
-            print(fold_id)
 
     np.save('results', scores)
 
@@ -272,10 +260,6 @@ for currentClfs in clfs:
     print("\nStatistical significance (alpha = 0.05):\n", significance_table)
 
     print('Wilcoxon', w_statistic)
-
-    print("\n")
-    print("****************************** STOP")
-    print("\n")
 
     writeToFile2(tmpStr, mean_ranks, advantage_table,
                  significance_table, w_statistic)
